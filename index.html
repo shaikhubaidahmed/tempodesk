@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#4338ca" />
+    <meta
+      name="description"
+      content="TempoDesk turns music lesson notes into private, practical weekly plans with local Gemma AI."
+    />
+    <title>TempoDesk — local lesson planning for music teachers</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script type="module" src="src/app.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#workspace">Skip to planner</a>
+
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="TempoDesk home">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 40 40" role="img">
+            <path d="M25 6v20.5a6.5 6.5 0 1 1-3-5.47V11l12-3v15.5a6.5 6.5 0 1 1-3-5.47V6.5L25 8v-2Z" />
+          </svg>
+        </span>
+        <span>TempoDesk</span>
+      </a>
+
+      <div class="topbar-actions">
+        <button class="status-chip" id="connectionButton" type="button" aria-describedby="connectionHelp">
+          <span class="status-dot" aria-hidden="true"></span>
+          <span id="connectionLabel">Checking local AI…</span>
+        </button>
+        <button class="icon-button" id="settingsButton" type="button" aria-label="Open local AI settings" aria-expanded="false">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z" />
+            <path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-2.83 2.83-.06-.06A1.7 1.7 0 0 0 15 19.4a1.7 1.7 0 0 0-1 .6 1.7 1.7 0 0 0-.4 1.1V21h-4v-.09A1.7 1.7 0 0 0 8.55 19.4a1.7 1.7 0 0 0-1.88.34l-.06.06-2.83-2.83.06-.06A1.7 1.7 0 0 0 4.18 15a1.7 1.7 0 0 0-1.51-1H2.6v-4h.09A1.7 1.7 0 0 0 4.2 9a1.7 1.7 0 0 0-.34-1.88l-.06-.06 2.83-2.83.06.06A1.7 1.7 0 0 0 8.57 4 1.7 1.7 0 0 0 9.6 2.5V2.4h4v.09A1.7 1.7 0 0 0 14.65 4a1.7 1.7 0 0 0 1.88-.34l.06-.06 2.83 2.83-.06.06A1.7 1.7 0 0 0 19 8.4a1.7 1.7 0 0 0 1.51 1h.09v4h-.09A1.7 1.7 0 0 0 19.4 15Z" />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <main id="workspace">
+      <section class="intro" aria-labelledby="pageTitle">
+        <div>
+          <p class="eyebrow">Private planning for independent teachers</p>
+          <h1 id="pageTitle">Turn lesson scribbles into a week students can follow.</h1>
+          <p class="intro-copy">
+            Paste your rough notes. Local Gemma turns them into a focused practice plan, student recap,
+            and parent update—without uploading student data.
+          </p>
+        </div>
+        <div class="privacy-note">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 3 5 6v5c0 4.6 2.98 8.9 7 10 4.02-1.1 7-5.4 7-10V6l-7-3Z" />
+            <path d="m9 12 2 2 4-5" />
+          </svg>
+          <div>
+            <strong>Student notes stay on this device</strong>
+            <span id="connectionHelp">TempoDesk talks only to Ollama on localhost.</span>
+          </div>
+        </div>
+      </section>
+
+      <div class="workspace-grid">
+        <section class="panel input-panel" aria-labelledby="inputTitle">
+          <div class="panel-heading">
+            <div>
+              <span class="step">1</span>
+              <div>
+                <p class="kicker">Lesson input</p>
+                <h2 id="inputTitle">What happened today?</h2>
+              </div>
+            </div>
+            <button class="text-button" id="exampleButton" type="button">Use example</button>
+          </div>
+
+          <form id="lessonForm" novalidate>
+            <div class="error-summary" id="errorSummary" role="alert" tabindex="-1" hidden>
+              <strong>Check the lesson details</strong>
+              <ul id="errorList"></ul>
+            </div>
+
+            <div class="field-row">
+              <div class="field">
+                <label for="studentName">Student first name <span aria-hidden="true">*</span></label>
+                <input id="studentName" name="studentName" autocomplete="off" maxlength="40" placeholder="e.g. Maya" required />
+                <p class="field-error" id="studentNameError"></p>
+              </div>
+              <div class="field">
+                <label for="instrument">Instrument <span aria-hidden="true">*</span></label>
+                <select id="instrument" name="instrument" required>
+                  <option value="">Choose one</option>
+                  <option>Piano</option>
+                  <option>Guitar</option>
+                  <option>Violin</option>
+                  <option>Voice</option>
+                  <option>Drums</option>
+                  <option>Other</option>
+                </select>
+                <p class="field-error" id="instrumentError"></p>
+              </div>
+            </div>
+
+            <div class="field-row field-row-3">
+              <div class="field">
+                <label for="level">Level</label>
+                <select id="level" name="level">
+                  <option>Beginner</option>
+                  <option>Early intermediate</option>
+                  <option>Intermediate</option>
+                  <option>Advanced</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="minutes">Minutes per day</label>
+                <input id="minutes" name="minutes" type="number" inputmode="numeric" min="5" max="120" value="20" />
+              </div>
+              <div class="field">
+                <label for="days">Days per week</label>
+                <input id="days" name="days" type="number" inputmode="numeric" min="1" max="7" value="5" />
+              </div>
+            </div>
+
+            <div class="field">
+              <div class="label-line">
+                <label for="lessonNotes">Raw lesson notes <span aria-hidden="true">*</span></label>
+                <span id="characterCount">0 / 2,500</span>
+              </div>
+              <textarea
+                id="lessonNotes"
+                name="lessonNotes"
+                rows="10"
+                maxlength="2500"
+                aria-describedby="notesHelp lessonNotesError"
+                placeholder="What improved? Where did they get stuck? What piece or exercise are they learning? Add only what you observed."
+                required
+              ></textarea>
+              <p class="field-help" id="notesHelp">Messy shorthand is fine. TempoDesk will not invent missing details.</p>
+              <p class="field-error" id="lessonNotesError"></p>
+            </div>
+
+            <button class="primary-button" id="generateButton" type="submit">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 1.3 4.2L17.5 8.5l-4.2 1.3L12 14l-1.3-4.2-4.2-1.3 4.2-1.3L12 3Z" /><path d="m18.5 14 .7 2.3 2.3.7-2.3.7-.7 2.3-.7-2.3-2.3-.7 2.3-.7.7-2.3Z" /></svg>
+              <span>Build this week’s plan</span>
+            </button>
+            <p class="model-note">Runs with <strong id="modelNote">gemma3:4b</strong> through your local Ollama installation.</p>
+          </form>
+        </section>
+
+        <section class="panel result-panel" aria-labelledby="resultTitle" aria-live="polite">
+          <div class="result-empty" id="emptyState">
+            <div class="empty-illustration" aria-hidden="true">
+              <svg viewBox="0 0 180 130">
+                <path class="staff" d="M24 39h132M24 51h132M24 63h132M24 75h132M24 87h132" />
+                <path class="note" d="M98 30v57.5a14 14 0 1 1-6-11.5V37l33-8v46.5a14 14 0 1 1-6-11.5V21L98 26v4Z" />
+              </svg>
+            </div>
+            <p class="kicker">Your plan will appear here</p>
+            <h2 id="resultTitle">Less admin. Better practice.</h2>
+            <p>TempoDesk converts what you observed into a realistic plan with clear, measurable targets.</p>
+            <button class="secondary-button empty-demo-button" id="emptyDemoButton" type="button">Preview sample plan</button>
+            <div class="empty-points">
+              <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6" /></svg> Time-boxed practice blocks</span>
+              <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6" /></svg> Ready-to-send recaps</span>
+              <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6" /></svg> No cloud account or API key</span>
+            </div>
+          </div>
+
+          <div class="loading-state" id="loadingState" aria-busy="true" hidden>
+            <div class="loading-mark" aria-hidden="true"><span></span><span></span><span></span></div>
+            <p class="kicker">Local Gemma is thinking</p>
+            <h2>Shaping notes into a useful week…</h2>
+            <p>This can take 10–60 seconds depending on your computer and model size.</p>
+            <div class="skeleton"><span></span><span></span><span></span></div>
+          </div>
+
+          <div class="result-content" id="resultContent" hidden>
+            <div class="result-header">
+              <div>
+                <p class="kicker">Weekly practice brief</p>
+                <h2 id="planTitle">Maya’s piano plan</h2>
+                <p id="planSummary"></p>
+              </div>
+              <button class="secondary-button" id="copyAllButton" type="button">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="11" height="12" rx="2" /><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h2" /></svg>
+                Copy plan
+              </button>
+            </div>
+
+            <div class="signal-grid">
+              <div class="signal-card success-card">
+                <span>Wins to reinforce</span>
+                <ul id="winsList"></ul>
+              </div>
+              <div class="signal-card focus-card">
+                <span>Focus this week</span>
+                <ul id="focusList"></ul>
+              </div>
+            </div>
+
+            <div class="tab-list" role="tablist" aria-label="Plan sections">
+              <button role="tab" id="practiceTab" aria-controls="practicePanel" aria-selected="true">Practice plan</button>
+              <button role="tab" id="messagesTab" aria-controls="messagesPanel" aria-selected="false" tabindex="-1">Messages</button>
+              <button role="tab" id="nextTab" aria-controls="nextPanel" aria-selected="false" tabindex="-1">Next lesson</button>
+            </div>
+
+            <div class="tab-panel" id="practicePanel" role="tabpanel" aria-labelledby="practiceTab">
+              <div class="schedule" id="schedule"></div>
+            </div>
+
+            <div class="tab-panel" id="messagesPanel" role="tabpanel" aria-labelledby="messagesTab" hidden>
+              <article class="message-card">
+                <div><span>Student recap</span><button class="copy-button" data-copy="studentMessage" type="button">Copy</button></div>
+                <p id="studentMessage"></p>
+              </article>
+              <article class="message-card">
+                <div><span>Parent update</span><button class="copy-button" data-copy="parentMessage" type="button">Copy</button></div>
+                <p id="parentMessage"></p>
+              </article>
+            </div>
+
+            <div class="tab-panel" id="nextPanel" role="tabpanel" aria-labelledby="nextTab" hidden>
+              <h3>Check these next time</h3>
+              <ol class="goal-list" id="goalList"></ol>
+              <div class="unknown-card" id="unknownCard">
+                <strong>Ask before assuming</strong>
+                <ul id="unknownList"></ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="result-error" id="resultError" role="alert" hidden>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 7v6M12 17h.01" /></svg>
+            <h2>Local AI didn’t answer</h2>
+            <p id="resultErrorMessage"></p>
+            <div>
+              <button class="secondary-button" id="retryButton" type="button">Try again</button>
+              <button class="text-button" id="demoButton" type="button">Preview sample result</button>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <section class="trust-strip" aria-label="TempoDesk product benefits">
+        <div><strong>₹799</strong><span>One-time teacher license</span></div>
+        <div><strong>0</strong><span>Student notes uploaded</span></div>
+        <div><strong>1 min</strong><span>From notes to sendable plan</span></div>
+      </section>
+    </main>
+
+    <dialog id="settingsDialog" aria-labelledby="settingsTitle">
+      <form method="dialog" id="settingsForm">
+        <div class="dialog-heading">
+          <div>
+            <p class="kicker">Local AI settings</p>
+            <h2 id="settingsTitle">Connect to Ollama</h2>
+          </div>
+          <button class="icon-button" value="cancel" aria-label="Close settings">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" /></svg>
+          </button>
+        </div>
+        <div class="field">
+          <label for="ollamaUrl">Ollama URL</label>
+          <input id="ollamaUrl" type="url" value="http://localhost:11434" />
+          <p class="field-help">Only localhost URLs are accepted to preserve TempoDesk’s privacy promise.</p>
+        </div>
+        <div class="field">
+          <label for="modelName">Model</label>
+          <input id="modelName" value="gemma3:4b" />
+          <p class="field-help">Recommended: gemma3:4b. A smaller gemma3:1b also works on modest laptops.</p>
+        </div>
+        <div class="dialog-actions">
+          <button class="secondary-button" id="testConnectionButton" type="button">Test connection</button>
+          <button class="primary-button compact" value="save">Save settings</button>
+        </div>
+        <p class="connection-result" id="connectionResult" aria-live="polite"></p>
+      </form>
+    </dialog>
+
+    <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+  </body>
+</html>

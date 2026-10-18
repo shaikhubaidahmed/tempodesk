@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TempoDesk browser tests</title>
+  </head>
+  <body>
+    <main>
+      <h1>TempoDesk browser tests</h1>
+      <p id="status" aria-live="polite">Running…</p>
+    </main>
+    <script type="module">
+      import {
+        SAMPLE_INPUT,
+        SAMPLE_PLAN,
+        buildPrompt,
+        formatPlanText,
+        normalizePlan,
+        parseOllamaResponse,
+        validateLesson
+      } from "../src/core.js";
+
+      const assert = (condition, message) => {
+        if (!condition) throw new Error(message);
+      };
+
+      try {
+        assert(Object.keys(validateLesson(SAMPLE_INPUT)).length === 0, "Sample input should be valid");
+        assert(buildPrompt(SAMPLE_INPUT).includes("exactly 5 practice days"), "Prompt should include the requested day count");
+        assert(parseOllamaResponse({ message: { content: '{"summary":"ok"}' } }).summary === "ok", "Chat JSON should parse");
+        const plan = normalizePlan({
+          ...SAMPLE_PLAN,
+          weekPlan: [{
+            ...SAMPLE_PLAN.weekPlan[0],
+            blocks: SAMPLE_PLAN.weekPlan[0].blocks.map((block) => ({ ...block, minutes: 20 }))
+          }]
+        }, SAMPLE_INPUT);
+        assert(plan.weekPlan.length === 5, "Normalizer should restore the requested day count");
+        assert(plan.weekPlan.every((day) => day.blocks.reduce((sum, block) => sum + block.minutes, 0) === 20), "Every day should total 20 minutes");
+        assert(formatPlanText(plan, SAMPLE_INPUT).includes("PARENT UPDATE"), "Copyable plan should include the parent update");
+        document.body.dataset.status = "passed";
+        document.querySelector("#status").textContent = "6 checks passed";
+      } catch (error) {
+        document.body.dataset.status = "failed";
+        document.querySelector("#status").textContent = error.message;
+        throw error;
+      }
+    </script>
+  </body>
+</html>
