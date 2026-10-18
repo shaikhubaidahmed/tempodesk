@@ -1,6 +1,6 @@
 ---
 title: "TempoDesk: I turned lesson scribbles into private practice plans with local Gemma"
-published: false
+published: true
 tags: devchallenge, hf26challenge, gemma, opensource
 ---
 
