@@ -40,7 +40,7 @@ ollama pull gemma3:4b
 npm start
 ```
 
-Then open `http://localhost:4173` and select **Use example**. If Ollama is not available, **Preview sample result** shows the complete product flow without pretending that the sample came from a live model.
+Then open `http://localhost:4173` and select **Use example**. If Ollama is not available, **Preview sample plan** shows the complete product flow without pretending that the sample came from a live model.
 
 For a screenshot-ready demo state, open `http://localhost:4173/?demo=1`.
 
@@ -51,6 +51,8 @@ For a screenshot-ready demo state, open `http://localhost:4173/?demo=1`.
 [Browse the source code on GitHub](https://github.com/shaikhubaidahmed/tempodesk)
 
 The project is MIT licensed, dependency-free at runtime, and includes focused tests for input validation, prompt construction, Ollama response parsing, output normalization, and copyable plan formatting.
+
+I also tested the complete local model path with `gemma3:4b`: Ollama returned schema-valid JSON with the requested number of practice days and exact per-day minute totals.
 
 ## How I Built It
 
